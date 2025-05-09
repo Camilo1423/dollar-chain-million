@@ -11,4 +11,12 @@ export interface ICryptoRepository {
   find(term: string, maxPages: number): Promise<CryptoEntity[]>;
 
   getCryptoById(id: string): Promise<CryptoEntity>;
+
+  addToFavorites(id: string): void;
+
+  removeFromFavorites(id: string): void;
+
+  isFavorite(id: string): boolean;
+
+  getFavorites(): Promise<CryptoEntity[]>;
 }

@@ -1,11 +1,13 @@
 import { ListCryptosUseCase } from "@/src/application/use-cases/get-list-crypto/ListCryptos.use-case";
+import { IsFavoriteUseCase } from "@/src/application/use-cases/is-favorite/isFavorite.use-case";
 import { SearchAllPageUseCase } from "@/src/application/use-cases/search-all-page/SearchAllPage.user-case";
 import { CryptoEntity } from "@/src/domain/entities/Crypto.entity";
 
 export class HomeViewModel {
   constructor(
     private readonly listCryptosUseCase: ListCryptosUseCase,
-    private readonly searchAllPageUseCase: SearchAllPageUseCase
+    private readonly searchAllPageUseCase: SearchAllPageUseCase,
+    private readonly isFavoriteUseCase: IsFavoriteUseCase
   ) {}
 
   async loadCryptoData({ page = 1 }: { page?: number }): Promise<{
@@ -14,7 +16,16 @@ export class HomeViewModel {
   }> {
     try {
       const data = await this.listCryptosUseCase.execute(page);
-      return data;
+      const dataWithFavorites = data.data.map((crypto) => {
+        return {
+          ...crypto,
+          is_favorite: this.isFavoriteUseCase.execute(crypto.id),
+        };
+      });
+      return {
+        data: dataWithFavorites,
+        total: data.total,
+      };
     } catch (error) {
       console.log(error);
       return {
@@ -33,7 +44,14 @@ export class HomeViewModel {
   }> {
     try {
       const data = await this.searchAllPageUseCase.execute(term, maxPages);
-      return data;
+      const dataWithFavorites = data.data.map((crypto) => ({
+        ...crypto,
+        is_favorite: this.isFavoriteUseCase.execute(crypto.id),
+      }));
+      return {
+        data: dataWithFavorites,
+        is_search: data.is_search,
+      };
     } catch (error) {
       console.log(error);
       return {

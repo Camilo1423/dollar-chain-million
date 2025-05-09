@@ -47,6 +47,15 @@ const DetailedCryptoView = () => {
     }
   }, [crypto]);
 
+  const handleToggleFavorite = useCallback(() => {
+    if (isFavorite) {
+      viewModel.removeFromFavorites({ id: id as string });
+    } else {
+      viewModel.addToFavorites({ id: id as string });
+    }
+    setIsFavorite(!isFavorite);
+  }, [isFavorite, id, viewModel]);
+
   useEffect(() => {
     getCryptoById();
   }, []);
@@ -60,7 +69,7 @@ const DetailedCryptoView = () => {
       <Navbar
         title={crypto.name}
         isFavorite={isFavorite}
-        onToggleFavorite={() => setIsFavorite(!isFavorite)}
+        onToggleFavorite={handleToggleFavorite}
       />
       <ScrollView className="flex-1">
         <PriceCard crypto={crypto} />

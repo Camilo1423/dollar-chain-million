@@ -15,4 +15,5 @@ export interface CryptoEntity {
   csupply: string;
   tsupply: string;
   msupply: string;
+  is_favorite: boolean;
 }

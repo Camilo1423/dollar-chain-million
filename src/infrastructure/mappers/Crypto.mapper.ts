@@ -19,7 +19,8 @@ export class CryptoMapper {
       volume24a: dto.volume24a,
       csupply: dto.csupply,
       tsupply: dto.tsupply,
-      msupply: dto.msupply
+      msupply: dto.msupply,
+      is_favorite: false,
     };
   }
 }

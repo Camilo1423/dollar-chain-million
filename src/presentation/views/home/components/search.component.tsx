@@ -12,7 +12,7 @@ const DEBOUNCE_DELAY = 500;
 
 const SearchComponent = ({ onSearch }: SearchComponentProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
+
 
   const debouncedSearch = useDebounce((term: string) => {
     onSearch(term);
@@ -32,7 +32,7 @@ const SearchComponent = ({ onSearch }: SearchComponentProps) => {
   };
 
   return (
-    <View className={`relative mb-6 ${isFocused ? "scale-105" : ""}`}>
+    <View className={`relative mb-6`}>
       <View className="absolute inset-0 bg-blue-500/20 blur-xl rounded-xl" />
       <BlurView
         intensity={80}
@@ -46,8 +46,6 @@ const SearchComponent = ({ onSearch }: SearchComponentProps) => {
           placeholder="Buscar criptomonedas..."
           placeholderTextColor="#6B7280"
           className="bg-transparent flex-1 text-sm text-white"
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           value={searchTerm}
           onChangeText={handleSearchChange}
         />

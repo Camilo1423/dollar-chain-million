@@ -1,7 +1,10 @@
 import { CryptoEntity } from "@/src/domain/entities/Crypto.entity";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "expo-router";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { container } from "../../container";
 import { HomeViewModel } from "./Viewmodel";
@@ -19,6 +22,7 @@ export default function HomeView() {
   const [total, setTotal] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const viewModel = useMemo(
     () => container.resolve<HomeViewModel>("HomeViewModel"),
@@ -46,6 +50,16 @@ export default function HomeView() {
     getData(currentPage);
   }, [currentPage]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if (isSearch && searchTerm) {
+        handleSearch(searchTerm);
+      } else {
+        getData(currentPage);
+      }
+    }, [currentPage, isSearch, searchTerm])
+  );
+
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages && !isLoading) {
       setCurrentPage(newPage);
@@ -53,6 +67,7 @@ export default function HomeView() {
   };
 
   const handleSearch = async (term: string) => {
+    setSearchTerm(term);
     const results = await viewModel.searchCrypto(term, totalPages);
     setSearchData(results.data);
     setIsSearch(results.is_search);
@@ -68,6 +83,7 @@ export default function HomeView() {
         rank: crypto.rank,
         price_usd: crypto.price_usd,
         percent_change_24h: crypto.percent_change_24h,
+        is_favorite: crypto.is_favorite,
       }}
     />
   );
@@ -144,15 +160,26 @@ export default function HomeView() {
 
   return (
     <View className="flex-1 bg-gray-900">
-      <View className="px-4 pt-6">
+      <View className="flex-row items-center px-4 mt-2">
         <Image
           source={require("../../assets/images/Logo.png")}
-          style={{ height: 50 }}
+          style={{ height: 50, width: 120, backgroundColor: "transparent" }}
           contentFit="contain"
         />
-        <Text className="text-gray-400 mb-6">
+        <Text className="text-gray-400 ml-auto">With ❤️ for Million</Text>
+      </View>
+      <View className="px-4 pt-6 flex-row items-center justify-between mb-6">
+        <Text className="text-gray-400">
           Page {currentPage} of {totalPages}
         </Text>
+        <View className="flex flex-row items-center gap-2">
+          <Link href="/favorites">
+            <Text className="text-gray-400 font-bold underline">Favorites</Text>
+          </Link>
+          <Ionicons name="heart" size={16} color="red" />
+        </View>
+      </View>
+      <View className="px-4">
         <SearchComponent onSearch={handleSearch} />
       </View>
       <FlashList
@@ -161,9 +188,9 @@ export default function HomeView() {
         estimatedItemSize={100}
         ItemSeparatorComponent={() => <View className="h-4" />}
         contentContainerStyle={{ paddingHorizontal: 16 }}
-        ListFooterComponent={isSearch ? null : renderPagination}
+        ListFooterComponent={isSearch ? <></> : renderPagination}
         refreshing={isLoading}
-        onRefresh={() => (isSearch ? null : getData(currentPage))}
+        onRefresh={() => (isSearch ? () => {} : getData(currentPage))}
       />
     </View>
   );

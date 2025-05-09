@@ -1,3 +1,4 @@
+import { Storage } from "@/src/shared/storage/storage";
 import { CryptoEntity } from "../../domain/entities/Crypto.entity";
 import { ICryptoRepository } from "../../domain/repositories/ICrypto.repository";
 import { consoleLog } from "../../shared/helpers/log.helper";
@@ -5,7 +6,40 @@ import { AxiosRequest } from "../../shared/remote/api";
 import { CryptoMapper } from "../mappers/Crypto.mapper";
 
 export class CryptoApiRepository implements ICryptoRepository {
-  constructor(private readonly httpService: AxiosRequest) {}
+  constructor(
+    private readonly httpService: AxiosRequest,
+    private readonly storage: Storage
+  ) {}
+
+  async getFavorites(): Promise<CryptoEntity[]> {
+    const favorites = this.storage.get<string[]>("favorites");
+    if (!favorites) return [] as CryptoEntity[];
+    const favoritesData = await Promise.all(
+      favorites.map((id) => this.getCryptoById(id))
+    );
+    return favoritesData;
+  }
+  addToFavorites(id: string): void {
+    const favorites = this.storage.get<string[]>("favorites");
+    if (favorites) {
+      this.storage.set("favorites", [...favorites, id]);
+    } else {
+      this.storage.set("favorites", [id]);
+    }
+  }
+  removeFromFavorites(id: string): void {
+    const favorites = this.storage.get<string[]>("favorites");
+    if (favorites) {
+      this.storage.set(
+        "favorites",
+        favorites.filter((item) => item !== id)
+      );
+    }
+  }
+  isFavorite(id: string): boolean {
+    const favorites = this.storage.get<string[]>("favorites");
+    return favorites?.includes(`${id}`) ?? false;
+  }
   async getCryptoById(id: string): Promise<CryptoEntity> {
     try {
       const resp = await this.httpService.ExecutePetition(

@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { useNavigation } from "../../../hooks/useNavigation";
 
@@ -10,6 +10,7 @@ interface CryptoData {
   rank: number;
   price_usd: string;
   percent_change_24h: string;
+  is_favorite: boolean;
 }
 
 interface CryptoCardProps {
@@ -17,7 +18,6 @@ interface CryptoCardProps {
 }
 
 const CardCryptoComponent = ({ crypto }: CryptoCardProps) => {
-  const [isFavorite, setIsFavorite] = useState(false);
   const isPositive = Number.parseFloat(crypto.percent_change_24h) > 0;
   const { navigateToCryptoDetail } = useNavigation();
 
@@ -42,7 +42,16 @@ const CardCryptoComponent = ({ crypto }: CryptoCardProps) => {
               </Text>
             </View>
             <View>
-              <Text className="font-medium text-white">{crypto.name}</Text>
+              <View className="flex-row items-center">
+                <Text className="font-medium text-white">{crypto.name}</Text>
+                <View className="ml-2">
+                  <Ionicons
+                    name={crypto.is_favorite ? "star" : "star-outline"}
+                    size={16}
+                    color={crypto.is_favorite ? "#fbbf24" : "#9ca3af"}
+                  />
+                </View>
+              </View>
               <Text className="text-xs text-gray-400">Rank #{crypto.rank}</Text>
             </View>
           </View>
@@ -71,21 +80,6 @@ const CardCryptoComponent = ({ crypto }: CryptoCardProps) => {
             </View>
           </View>
         </View>
-
-        {/* Favorite button */}
-        <Pressable
-          className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-          onPress={(e) => {
-            e.stopPropagation();
-            setIsFavorite(!isFavorite);
-          }}
-        >
-          <Ionicons
-            name={isFavorite ? "star" : "star-outline"}
-            size={16}
-            color={isFavorite ? "#fbbf24" : "#9ca3af"}
-          />
-        </Pressable>
       </View>
     </Pressable>
   );
