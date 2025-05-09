@@ -1,8 +1,8 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
-function ChevronComponent({
+const ChevronComponent = React.memo(({
   currentPage,
   handlePageChange,
   isLoading,
@@ -14,7 +14,7 @@ function ChevronComponent({
   isLoading: boolean;
   isBack: boolean;
   totalPages: number;
-}) {
+}) => {
   const isDisabled = isBack ? currentPage === 1 : currentPage === totalPages;
   const nextPage = isBack ? currentPage - 1 : currentPage + 1;
   return (
@@ -34,6 +34,8 @@ function ChevronComponent({
       />
     </Pressable>
   );
-}
+});
+
+ChevronComponent.displayName = 'ChevronComponent';
 
 export default ChevronComponent;

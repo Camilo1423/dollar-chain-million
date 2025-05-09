@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable, Text } from "react-native";
 
-function PaginationComponent({
+const PaginationComponent = React.memo(({
   currentPage,
   handlePageChange,
   i,
@@ -11,7 +11,7 @@ function PaginationComponent({
   handlePageChange: (i: number) => void;
   i: number;
   isAuxiliar?: boolean;
-}) {
+}) => {
   return (
     <Pressable
       key={i}
@@ -31,6 +31,8 @@ function PaginationComponent({
       </Text>
     </Pressable>
   );
-}
+});
+
+PaginationComponent.displayName = 'PaginationComponent';
 
 export default PaginationComponent;
