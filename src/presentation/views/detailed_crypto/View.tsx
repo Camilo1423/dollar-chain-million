@@ -13,7 +13,7 @@ import { DetailedCryptoViewModel } from "./Viewmodel";
 const DetailedCryptoView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [crypto, setCrypto] = useState<CryptoEntity>({} as CryptoEntity);
-  const [isFavorite, setIsFavorite] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
   const { id } = useLocalSearchParams();
 
   const viewModel = useMemo(
@@ -25,6 +25,7 @@ const DetailedCryptoView = () => {
     setIsLoading(true);
     try {
       const data = await viewModel.getCryptoById({ id: id as string });
+      setIsFavorite(data.is_favorite);
       setCrypto(data);
     } catch (error) {
       console.log(error);

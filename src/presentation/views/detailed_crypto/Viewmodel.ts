@@ -15,6 +15,7 @@ export class DetailedCryptoViewModel {
   async getCryptoById({ id }: { id: string }): Promise<CryptoEntity> {
     try {
       const data = await this.getCryptoByIdUseCase.execute(id);
+      data.is_favorite = this.isFavorite({ id });
       return data;
     } catch (error) {
       console.log(error);
