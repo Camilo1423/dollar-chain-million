@@ -1,14 +1,8 @@
-import "reflect-metadata";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import "../src/presentation/css/global.css";
-
-export const unstable_settings = {
-  initialRouteName: 'index',
-};
-
+import { StatusBar } from "react-native";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -22,11 +16,17 @@ export default function RootLayout() {
 
   return (
     <>
-      <Stack>
+      <Stack screenOptions={{
+        headerStyle: {
+          backgroundColor: '#111827',
+        },
+        headerTintColor: '#111827',
+      }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="crypto/[id]" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar barStyle="light-content" backgroundColor="#111827" />
     </>
   );
 }
