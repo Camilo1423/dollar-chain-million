@@ -34,8 +34,8 @@ Dollar Chain busca proporcionar una herramienta confiable y fácil de usar para 
 
 ### 1. Descargar el Código
 ```bash
-git clone [https://github.com/Camilo1423/dollar-chain-million]
-cd [dollar-chain-million]
+git clone https://github.com/Camilo1423/dollar-chain-million
+cd dollar-chain-million
 ```
 
 ### 2. Instalar Dependencias
